@@ -1,0 +1,21 @@
+# Ez-gocommit configuration
+# Copy this file to .ezgocommit.toml in your project root,
+# or to ~/.config/ezgocommit/config.toml for global settings.
+
+# Anthropic API key (or use the ANTHROPIC_API_KEY environment variable)
+# api_key = "sk-ant-..."
+
+# Claude model to use
+model = "claude-sonnet-4-6"
+
+# Commit message style: conventional | gitmoji | free | custom
+commit_style = "conventional"
+
+# Language for the commit message
+language = "en"
+
+# Maximum number of diff lines to send to the AI (prevent huge prompts)
+max_diff_lines = 500
+
+# If commit_style = "custom", describe your format here:
+# custom_format = "TICKET-123: short description"
