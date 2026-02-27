@@ -94,7 +94,7 @@ Para repositórios sem commits ainda (commit inicial), `getStagedDiff` usa uma l
 - `systemPrompt` — o conjunto completo de instruções enviado como turn de sistema do Claude. Define regras, estilos suportados e o formato de saída JSON estrito.
 - `userPromptTemplate` — o template do turn de usuário com tokens `{{PLACEHOLDER}}` substituídos em tempo de execução.
 
-**`client.go`** chama `client.Messages.New()` do `anthropic-sdk-go` oficial. Remove qualquer markdown fence acidental da resposta antes do parsing JSON.
+**`client.go`** detecta o provedor automaticamente pelo prefixo da chave de API (`AIzaSy*` → Gemini, qualquer outra → Anthropic). Para Anthropic, chama `client.Messages.New()` do `anthropic-sdk-go` oficial. Para Gemini, usa o endpoint OpenAI-compatível do Google (`generativelanguage.googleapis.com`). Ambos compartilham o mesmo system prompt e a mesma função de parsing JSON.
 
 **`types.go`** define `Suggestion` (uma opção) e `AIResponse` (a resposta completa parseada).
 
@@ -245,7 +245,7 @@ For repositories with no commits yet (initial commit), `getStagedDiff` falls bac
 - `systemPrompt` — the full instruction set sent as the Claude system turn. Defines rules, supported styles, and the strict JSON output format.
 - `userPromptTemplate` — the user turn template with `{{PLACEHOLDER}}` tokens replaced at runtime.
 
-**`client.go`** calls `client.Messages.New()` from the official `anthropic-sdk-go`. It strips any accidental markdown fences from the response before JSON parsing.
+**`client.go`** detects the provider automatically from the API key prefix (`AIzaSy*` → Gemini, anything else → Anthropic). For Anthropic, it calls `client.Messages.New()` from the official `anthropic-sdk-go`. For Gemini, it uses Google's OpenAI-compatible endpoint (`generativelanguage.googleapis.com`). Both providers share the same system prompt and JSON parsing function.
 
 **`types.go`** defines `Suggestion` (one option) and `AIResponse` (the full parsed response).
 

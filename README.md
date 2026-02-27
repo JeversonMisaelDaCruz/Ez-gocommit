@@ -4,7 +4,9 @@
 
 # Ez-gocommit
 
-Uma ferramenta CLI escrita em Go que gera mensagens de commit Git semânticas usando a API Claude (Anthropic). Ela analisa seu diff staged, nome do branch, histórico de commits recentes e o README do projeto para produzir 3 sugestões rankeadas — exibidas em uma TUI interativa no terminal onde você pode escolher, editar ou cancelar.
+Uma ferramenta CLI escrita em Go que gera mensagens de commit Git semânticas usando Claude (Anthropic) ou Gemini (Google). Ela analisa seu diff staged, nome do branch, histórico de commits recentes e o README do projeto para produzir 3 sugestões rankeadas — exibidas em uma TUI interativa no terminal onde você pode escolher, editar ou cancelar.
+
+O provedor é detectado automaticamente pela chave de API: chaves `AIzaSy*` usam Gemini; qualquer outra usa Claude.
 
 ## Como funciona
 
@@ -37,27 +39,30 @@ go install github.com/jeversonmisael/ez-gocommit@latest
 ## Requisitos
 
 - Go 1.22+
-- Uma [chave de API Anthropic](https://console.anthropic.com/)
+- Uma chave de API: [Anthropic](https://console.anthropic.com/) ou [Google AI Studio](https://aistudio.google.com/)
 - Um repositório Git com mudanças staged
 
 ## Configuração
 
-A única configuração obrigatória é sua chave de API.
+A única configuração obrigatória é sua chave de API. O provedor é detectado automaticamente pelo prefixo da chave.
 
-**Opção 1 — variável de ambiente (recomendado):**
+**Com Claude (Anthropic):**
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Adicione ao seu `~/.zshrc` ou `~/.bashrc` para persistir.
+**Com Gemini (Google):**
 
-**Opção 2 — arquivo de configuração:**
+```bash
+export ANTHROPIC_API_KEY=AIzaSy...
+```
 
-Crie `~/.config/ezgocommit/config.toml`:
+Adicione ao seu `~/.zshrc` ou `~/.bashrc` para persistir. Também é possível usar um arquivo de configuração:
 
 ```toml
-api_key = "sk-ant-..."
+# ~/.config/ezgocommit/config.toml
+api_key = "sk-ant-..."   # ou AIzaSy... para Gemini
 ```
 
 Veja [docs/configuration.md](docs/configuration.md) para todas as opções disponíveis.
@@ -144,7 +149,9 @@ MIT
 
 # Ez-gocommit
 
-A CLI tool written in Go that generates semantic Git commit messages using the Claude API (Anthropic). It analyzes your staged diff, branch name, recent commit history, and project README to produce 3 ranked suggestions — displayed in an interactive terminal UI where you can pick, edit, or abort.
+A CLI tool written in Go that generates semantic Git commit messages using Claude (Anthropic) or Gemini (Google). It analyzes your staged diff, branch name, recent commit history, and project README to produce 3 ranked suggestions — displayed in an interactive terminal UI where you can pick, edit, or abort.
+
+The provider is detected automatically from your API key: `AIzaSy*` keys use Gemini; anything else uses Claude.
 
 ## How it works
 
@@ -177,27 +184,30 @@ go install github.com/jeversonmisael/ez-gocommit@latest
 ## Requirements
 
 - Go 1.22+
-- An [Anthropic API key](https://console.anthropic.com/)
+- An API key: [Anthropic](https://console.anthropic.com/) or [Google AI Studio](https://aistudio.google.com/)
 - A Git repository with staged changes
 
 ## Setup
 
-The only required configuration is your API key.
+The only required configuration is your API key. The provider is detected automatically from the key prefix.
 
-**Option 1 — environment variable (recommended):**
+**With Claude (Anthropic):**
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Add it to your `~/.zshrc` or `~/.bashrc` to persist it.
+**With Gemini (Google):**
 
-**Option 2 — config file:**
+```bash
+export ANTHROPIC_API_KEY=AIzaSy...
+```
 
-Create `~/.config/ezgocommit/config.toml`:
+Add it to your `~/.zshrc` or `~/.bashrc` to persist it. You can also use a config file:
 
 ```toml
-api_key = "sk-ant-..."
+# ~/.config/ezgocommit/config.toml
+api_key = "sk-ant-..."   # or AIzaSy... for Gemini
 ```
 
 See [docs/configuration.md](docs/configuration.md) for all available options.
