@@ -12,6 +12,7 @@ var (
 	flagModel    string
 	flagConfig   string
 	flagLanguage string
+	flagDryRun   bool
 )
 
 var rootCmd = &cobra.Command{
@@ -38,6 +39,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&flagModel, "model", "", "Claude model to use (default: claude-sonnet-4-6)")
 	rootCmd.PersistentFlags().StringVar(&flagLanguage, "language", "", "language for commit messages, e.g. en, pt, es (default: en)")
 	rootCmd.PersistentFlags().StringVar(&flagConfig, "config", "", "path to config file")
+	rootCmd.PersistentFlags().BoolVar(&flagDryRun, "dry-run", false, "skip API call and use mock suggestions (no API key required)")
 
 	rootCmd.AddCommand(versionCmd)
 }
