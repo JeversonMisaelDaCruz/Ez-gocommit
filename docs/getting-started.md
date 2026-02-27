@@ -1,3 +1,106 @@
+🇧🇷 [Português](#) | 🇺🇸 [English](#english)
+
+---
+
+# Primeiros Passos
+
+## Pré-requisitos
+
+- **Go 1.22+** — [download](https://go.dev/dl/)
+- **Git** — qualquer versão recente
+- **Chave de API Anthropic** — obtenha em [console.anthropic.com](https://console.anthropic.com/)
+
+## Instalação
+
+### A partir do código-fonte
+
+```bash
+git clone https://github.com/jeversonmisael/ez-gocommit
+cd ez-gocommit
+go build -o ezgocommit .
+```
+
+Mova o binário para algum lugar no seu `$PATH`:
+
+```bash
+sudo mv ezgocommit /usr/local/bin/
+```
+
+### Com go install
+
+```bash
+go install github.com/jeversonmisael/ez-gocommit@latest
+```
+
+### Build com tag de versão
+
+```bash
+go build -ldflags="-X github.com/jeversonmisael/ez-gocommit/cmd.Version=1.0.0" -o ezgocommit .
+```
+
+## Configurando a chave de API
+
+A forma mais simples é uma variável de ambiente:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Para torná-la permanente, adicione essa linha ao seu `~/.zshrc`, `~/.bashrc` ou equivalente.
+
+Como alternativa, crie um arquivo de configuração em `~/.config/ezgocommit/config.toml`:
+
+```toml
+api_key = "sk-ant-..."
+```
+
+Veja [configuration.md](configuration.md) para detalhes de todas as opções.
+
+## Primeiro uso
+
+Faça stage de algumas mudanças e execute a ferramenta:
+
+```bash
+cd seu-projeto
+git add .
+ezgocommit
+```
+
+A ferramenta irá:
+
+1. Ler seu diff staged, nome do branch e histórico de commits recentes
+2. Enviar esse contexto para o Claude
+3. Exibir 3 sugestões de mensagens de commit rankeadas em uma UI interativa
+4. Commitar a que você escolher
+
+## Verificando a instalação
+
+```bash
+ezgocommit version
+```
+
+## Executando sem chave de API
+
+Se quiser testar o binário sem gastar créditos de API, você pode verificar que a ferramenta detecta a chave ausente corretamente:
+
+```bash
+ANTHROPIC_API_KEY="" ezgocommit
+# Error: Anthropic API key not found.
+# ...
+```
+
+## Próximos passos
+
+- [Referência de Configuração](configuration.md) — personalizar modelo, estilo, limites de diff
+- [Arquitetura](architecture.md) — entender como o código está estruturado
+- [Contribuindo](contributing.md) — como adicionar funcionalidades ou corrigir bugs
+
+---
+
+<a id="english"></a>
+
+🇧🇷 [Português](#) | 🇺🇸 [English](#english)
+
 # Getting Started
 
 ## Prerequisites
