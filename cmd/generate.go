@@ -16,7 +16,7 @@ import (
 )
 
 func runGenerate(cmd *cobra.Command, args []string) error {
-	cfg, err := config.LoadWithOverrides(flagStyle, flagModel)
+	cfg, err := config.LoadWithOverrides(flagStyle, flagModel, flagLanguage)
 	if err != nil {
 		return err
 	}

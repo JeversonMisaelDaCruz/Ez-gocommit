@@ -111,7 +111,7 @@ func TestLoadWithOverrides(t *testing.T) {
 	os.Setenv("ANTHROPIC_API_KEY", "sk-ant-test")
 	defer os.Unsetenv("ANTHROPIC_API_KEY")
 
-	cfg, err := LoadWithOverrides("gitmoji", "claude-opus-4-6")
+	cfg, err := LoadWithOverrides("gitmoji", "claude-opus-4-6", "pt")
 	if err != nil {
 		t.Fatalf("LoadWithOverrides() error: %v", err)
 	}
@@ -122,13 +122,16 @@ func TestLoadWithOverrides(t *testing.T) {
 	if cfg.Model != "claude-opus-4-6" {
 		t.Errorf("Model = %q, want %q", cfg.Model, "claude-opus-4-6")
 	}
+	if cfg.Language != "pt" {
+		t.Errorf("Language = %q, want %q", cfg.Language, "pt")
+	}
 }
 
 func TestLoadWithOverrides_EmptyKeepsDefault(t *testing.T) {
 	os.Setenv("ANTHROPIC_API_KEY", "sk-ant-test")
 	defer os.Unsetenv("ANTHROPIC_API_KEY")
 
-	cfg, err := LoadWithOverrides("", "")
+	cfg, err := LoadWithOverrides("", "", "")
 	if err != nil {
 		t.Fatalf("LoadWithOverrides() error: %v", err)
 	}
