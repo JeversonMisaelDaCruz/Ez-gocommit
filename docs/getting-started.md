@@ -8,7 +8,9 @@
 
 - **Go 1.22+** — [download](https://go.dev/dl/)
 - **Git** — qualquer versão recente
-- **Chave de API Anthropic** — obtenha em [console.anthropic.com](https://console.anthropic.com/)
+- **Chave de API** — escolha um dos provedores:
+  - **Anthropic (Claude):** obtenha em [console.anthropic.com](https://console.anthropic.com/)
+  - **Google (Gemini):** obtenha em [aistudio.google.com](https://aistudio.google.com/)
 
 ## Instalação
 
@@ -40,18 +42,26 @@ go build -ldflags="-X github.com/jeversonmisael/ez-gocommit/cmd.Version=1.0.0" -
 
 ## Configurando a chave de API
 
-A forma mais simples é uma variável de ambiente:
+A ferramenta detecta o provedor automaticamente pelo prefixo da chave: `AIzaSy*` usa Gemini, qualquer outra usa Claude.
+
+**Com Claude (Anthropic):**
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Para torná-la permanente, adicione essa linha ao seu `~/.zshrc`, `~/.bashrc` ou equivalente.
+**Com Gemini (Google):**
+
+```bash
+export ANTHROPIC_API_KEY=AIzaSy...
+```
+
+Para torná-la permanente, adicione ao seu `~/.zshrc`, `~/.bashrc` ou equivalente.
 
 Como alternativa, crie um arquivo de configuração em `~/.config/ezgocommit/config.toml`:
 
 ```toml
-api_key = "sk-ant-..."
+api_key = "sk-ant-..."   # ou AIzaSy... para Gemini
 ```
 
 Veja [configuration.md](configuration.md) para detalhes de todas as opções.
@@ -107,7 +117,9 @@ ANTHROPIC_API_KEY="" ezgocommit
 
 - **Go 1.22+** — [download](https://go.dev/dl/)
 - **Git** — any recent version
-- **Anthropic API key** — get one at [console.anthropic.com](https://console.anthropic.com/)
+- **API key** — choose a provider:
+  - **Anthropic (Claude):** get one at [console.anthropic.com](https://console.anthropic.com/)
+  - **Google (Gemini):** get one at [aistudio.google.com](https://aistudio.google.com/)
 
 ## Installation
 
@@ -139,10 +151,18 @@ go build -ldflags="-X github.com/jeversonmisael/ez-gocommit/cmd.Version=1.0.0" -
 
 ## Setting up the API key
 
-The simplest way is an environment variable:
+The tool detects the provider automatically from the key prefix: `AIzaSy*` uses Gemini, anything else uses Claude.
+
+**With Claude (Anthropic):**
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+**With Gemini (Google):**
+
+```bash
+export ANTHROPIC_API_KEY=AIzaSy...
 ```
 
 To make it permanent, add that line to your `~/.zshrc`, `~/.bashrc`, or equivalent.
@@ -150,7 +170,7 @@ To make it permanent, add that line to your `~/.zshrc`, `~/.bashrc`, or equivale
 Alternatively, create a config file at `~/.config/ezgocommit/config.toml`:
 
 ```toml
-api_key = "sk-ant-..."
+api_key = "sk-ant-..."   # or AIzaSy... for Gemini
 ```
 
 See [configuration.md](configuration.md) for details on all options.

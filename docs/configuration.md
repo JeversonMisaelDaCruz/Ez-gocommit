@@ -6,14 +6,25 @@
 
 O Ez-gocommit é configurado através de variáveis de ambiente e/ou arquivos TOML. Variáveis de ambiente sempre têm prioridade.
 
+## Provedores
+
+A ferramenta suporta dois provedores de IA e detecta qual usar automaticamente pelo prefixo da chave de API:
+
+| Prefixo da chave | Provedor | Onde obter |
+|-----------------|----------|-----------|
+| `AIzaSy...` | Google Gemini | [aistudio.google.com](https://aistudio.google.com/) |
+| Qualquer outro (ex: `sk-ant-...`) | Anthropic Claude | [console.anthropic.com](https://console.anthropic.com/) |
+
+Não é necessária nenhuma configuração extra — basta definir a chave correta.
+
 ## Chave de API
 
 A chave de API é a única configuração obrigatória.
 
 | Método | Valor |
 |--------|-------|
-| Variável de ambiente | `ANTHROPIC_API_KEY=sk-ant-...` |
-| Campo no arquivo de config | `api_key = "sk-ant-..."` |
+| Variável de ambiente | `ANTHROPIC_API_KEY=sk-ant-...` ou `ANTHROPIC_API_KEY=AIzaSy...` |
+| Campo no arquivo de config | `api_key = "sk-ant-..."` ou `api_key = "AIzaSy..."` |
 
 A variável de ambiente tem precedência sobre o arquivo de configuração.
 
@@ -116,13 +127,31 @@ commit_style   = "custom"
 custom_format  = "JIRA-XXXX | tipo: descrição curta"
 ```
 
-## Modelos Claude disponíveis
+## Modelos disponíveis
+
+### Claude (Anthropic)
 
 | Modelo | ID | Notas |
 |--------|----|-------|
 | Sonnet 4.6 (padrão) | `claude-sonnet-4-6` | Melhor equilíbrio entre qualidade e velocidade |
 | Opus 4.6 | `claude-opus-4-6` | Maior qualidade, mais lento |
 | Haiku 4.5 | `claude-haiku-4-5-20251001` | Mais rápido, mais econômico |
+
+### Gemini (Google)
+
+| Modelo | ID | Notas |
+|--------|----|-------|
+| Gemini 2.0 Flash (padrão) | `gemini-2.0-flash` | Padrão quando Gemini é detectado |
+| Gemini 1.5 Pro | `gemini-1.5-pro` | Alta qualidade |
+| Gemini Pro | `gemini-pro` | Versão estável |
+
+Para usar um modelo Gemini específico:
+
+```bash
+ezgocommit --model gemini-1.5-pro
+```
+
+> Se uma chave Gemini for usada com um modelo Claude (ex: `--model claude-opus-4-6`), a ferramenta usa automaticamente `gemini-2.0-flash`.
 
 ---
 
@@ -134,14 +163,25 @@ custom_format  = "JIRA-XXXX | tipo: descrição curta"
 
 Ez-gocommit is configured through environment variables and/or TOML files. Environment variables always take priority.
 
+## Providers
+
+The tool supports two AI providers and detects which one to use automatically from the API key prefix:
+
+| Key prefix | Provider | Where to get |
+|------------|----------|-------------|
+| `AIzaSy...` | Google Gemini | [aistudio.google.com](https://aistudio.google.com/) |
+| Anything else (e.g. `sk-ant-...`) | Anthropic Claude | [console.anthropic.com](https://console.anthropic.com/) |
+
+No extra configuration is needed — just set the right key.
+
 ## API key
 
 The API key is the only required setting.
 
 | Method | Value |
 |--------|-------|
-| Environment variable | `ANTHROPIC_API_KEY=sk-ant-...` |
-| Config file field | `api_key = "sk-ant-..."` |
+| Environment variable | `ANTHROPIC_API_KEY=sk-ant-...` or `ANTHROPIC_API_KEY=AIzaSy...` |
+| Config file field | `api_key = "sk-ant-..."` or `api_key = "AIzaSy..."` |
 
 The environment variable takes precedence over the config file.
 
@@ -244,10 +284,28 @@ commit_style   = "custom"
 custom_format  = "JIRA-XXXX | type: short description"
 ```
 
-## Available Claude models
+## Available models
+
+### Claude (Anthropic)
 
 | Model | ID | Notes |
 |-------|----|-------|
 | Sonnet 4.6 (default) | `claude-sonnet-4-6` | Best balance of quality and speed |
 | Opus 4.6 | `claude-opus-4-6` | Highest quality, slower |
 | Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest, most economical |
+
+### Gemini (Google)
+
+| Model | ID | Notes |
+|-------|----|-------|
+| Gemini 2.0 Flash (default) | `gemini-2.0-flash` | Default when Gemini is detected |
+| Gemini 1.5 Pro | `gemini-1.5-pro` | High quality |
+| Gemini Pro | `gemini-pro` | Stable version |
+
+To use a specific Gemini model:
+
+```bash
+ezgocommit --model gemini-1.5-pro
+```
+
+> If a Gemini key is used with a Claude model name (e.g. `--model claude-opus-4-6`), the tool automatically falls back to `gemini-2.0-flash`.
