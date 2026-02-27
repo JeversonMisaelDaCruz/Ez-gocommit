@@ -8,9 +8,10 @@ import (
 )
 
 var (
-	flagStyle  string
-	flagModel  string
-	flagConfig string
+	flagStyle    string
+	flagModel    string
+	flagConfig   string
+	flagLanguage string
 )
 
 var rootCmd = &cobra.Command{
@@ -35,6 +36,7 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringVar(&flagStyle, "style", "", "commit style: conventional, gitmoji, free, custom")
 	rootCmd.PersistentFlags().StringVar(&flagModel, "model", "", "Claude model to use (default: claude-sonnet-4-6)")
+	rootCmd.PersistentFlags().StringVar(&flagLanguage, "language", "", "language for commit messages, e.g. en, pt, es (default: en)")
 	rootCmd.PersistentFlags().StringVar(&flagConfig, "config", "", "path to config file")
 
 	rootCmd.AddCommand(versionCmd)

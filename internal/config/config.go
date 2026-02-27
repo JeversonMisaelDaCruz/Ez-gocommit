@@ -57,7 +57,7 @@ func Load() (*Config, error) {
 	return cfg, nil
 }
 
-func LoadWithOverrides(style, model string) (*Config, error) {
+func LoadWithOverrides(style, model, language string) (*Config, error) {
 	cfg, err := Load()
 	if err != nil {
 		return nil, err
@@ -67,6 +67,9 @@ func LoadWithOverrides(style, model string) (*Config, error) {
 	}
 	if model != "" {
 		cfg.Model = model
+	}
+	if language != "" {
+		cfg.Language = language
 	}
 	return cfg, nil
 }
