@@ -1,3 +1,106 @@
+🇧🇷 [Português](#) | 🇺🇸 [English](#english)
+
+---
+
+# Contribuindo
+
+## Configuração de desenvolvimento
+
+```bash
+git clone https://github.com/jeversonmisael/ez-gocommit
+cd ez-gocommit
+go mod download
+```
+
+Build:
+
+```bash
+go build -o ezgocommit .
+```
+
+Executar sem instalar:
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... go run .
+```
+
+## Executando verificações
+
+```bash
+go build ./...   # deve compilar sem erros
+go vet ./...     # deve passar sem avisos
+```
+
+## Estrutura do projeto
+
+```
+cmd/            Comandos CLI (Cobra) — sem lógica de negócio
+internal/
+  config/       carregamento de configuração
+  git/          coleta de contexto git (go-git)
+  ai/           integração com a API Anthropic
+  ui/           TUI Bubbletea
+docs/           documentação do projeto
+```
+
+Veja [architecture.md](architecture.md) para uma explicação detalhada de cada pacote.
+
+## Adicionando um novo estilo de commit
+
+1. Adicione uma constante em `internal/config/config.go`:
+   ```go
+   StyleMyStyle = "mystyle"
+   ```
+
+2. Documente o estilo em `internal/ai/prompt.go` dentro da constante `systemPrompt` na seção `## Commit styles supported:`.
+
+3. Adicione o estilo à referência de configuração em `docs/configuration.md`.
+
+## Modificando o prompt de IA
+
+O system prompt vive em `internal/ai/prompt.go` como a constante `systemPrompt`. O template do user prompt é `userPromptTemplate` no mesmo arquivo.
+
+Regras para mudanças no prompt:
+- O formato de saída deve permanecer JSON estrito correspondendo a `AIResponse` em `internal/ai/types.go`
+- Não altere os nomes dos placeholders (`{{GIT_DIFF}}`, etc.) sem atualizar `BuildUserPrompt`
+- Teste manualmente com uma chave de API real e uma mudança staged antes de abrir um PR
+
+## Alterando a TUI
+
+A TUI vive inteiramente em `internal/ui/selector.go`. Segue o padrão padrão Bubbletea model/update/view:
+
+- `model` — estado
+- `Update()` — trata eventos de teclas, despacha para `updateSelect` ou `updateEdit`
+- `View()` — renderiza o estado atual como string usando Lipgloss
+
+Cores são definidas como variáveis `lipgloss.Style` no nível do pacote no topo do arquivo.
+
+## Mensagens de commit
+
+Este projeto usa [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat(scope): short description
+fix: correct something
+docs: update configuration reference
+refactor(git): simplify diff collection
+```
+
+Tipos: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`
+
+## Abrindo um pull request
+
+1. Faça um fork e crie um branch: `git checkout -b feat/minha-funcionalidade`
+2. Faça suas mudanças
+3. Execute `go build ./...` e `go vet ./...`
+4. Abra um PR com uma descrição clara da mudança e por que ela foi feita
+
+---
+
+<a id="english"></a>
+
+🇧🇷 [Português](#) | 🇺🇸 [English](#english)
+
 # Contributing
 
 ## Development setup
