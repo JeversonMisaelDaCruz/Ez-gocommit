@@ -2,10 +2,10 @@ package git
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	gogit "github.com/go-git/go-git/v5"
@@ -34,7 +34,7 @@ func Collect(repoPath string, maxDiffLines int) (*Context, error) {
 		branch = "unknown"
 	}
 
-	diff, files, err := getStagedDiff(repo, maxDiffLines)
+	diff, files, err := getStagedDiff(repo, repoPath, maxDiffLines)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func getBranchName(repo *gogit.Repository) (string, error) {
 	return head.Hash().String()[:8], nil
 }
 
-func getStagedDiff(repo *gogit.Repository, maxLines int) (string, []string, error) {
+func getStagedDiff(repo *gogit.Repository, repoPath string, maxLines int) (string, []string, error) {
 	wt, err := repo.Worktree()
 	if err != nil {
 		return "", nil, fmt.Errorf("cannot open worktree: %w", err)
@@ -91,54 +91,18 @@ func getStagedDiff(repo *gogit.Repository, maxLines int) (string, []string, erro
 		return "", nil, nil
 	}
 
-	head, err := repo.Head()
-	var headCommit *object.Commit
-	if err == nil {
-		headCommit, err = repo.CommitObject(head.Hash())
-		if err != nil {
-			headCommit = nil
-		}
-	}
+	_, headErr := repo.Head()
 
-	var diffBuf bytes.Buffer
-
-	if headCommit != nil {
-		headTree, err := headCommit.Tree()
-		if err != nil {
-			return buildSimpleDiff(stagedFiles), stagedFiles, nil
-		}
-
-		idx, err := repo.Storer.Index()
-		if err != nil {
-			return buildSimpleDiff(stagedFiles), stagedFiles, nil
-		}
-
-		idxTree := &object.Tree{}
-		for _, entry := range idx.Entries {
-			idxTree.Entries = append(idxTree.Entries, object.TreeEntry{
-				Name: entry.Name,
-				Mode: entry.Mode,
-				Hash: entry.Hash,
-			})
-		}
-
-		changes, err := headTree.Diff(idxTree)
-		if err != nil {
-			return buildSimpleDiff(stagedFiles), stagedFiles, nil
-		}
-
-		for _, change := range changes {
-			patch, err := change.Patch()
-			if err != nil {
-				continue
-			}
-			diffBuf.WriteString(patch.String())
-		}
-	} else {
+	if headErr != nil {
 		return buildSimpleDiff(stagedFiles), stagedFiles, nil
 	}
 
-	diffStr := truncateLines(diffBuf.String(), maxLines)
+	out, err := exec.Command("git", "-C", repoPath, "diff", "--cached").Output()
+	if err != nil {
+		return buildSimpleDiff(stagedFiles), stagedFiles, nil
+	}
+
+	diffStr := truncateLines(string(out), maxLines)
 	return diffStr, stagedFiles, nil
 }
 
