@@ -121,6 +121,16 @@ ezgocommit --style free          # sem restrições de formato
 ezgocommit --model claude-opus-4-6  # usar um modelo Claude diferente
 ```
 
+## Claude Code Skill
+
+Se você usa o [Claude Code](https://claude.ai/code), o projeto inclui uma skill nativa. Após clonar o repositório, o comando `/ez-gocommit` fica disponível automaticamente no Claude Code:
+
+```text
+/ez-gocommit
+```
+
+O Claude verifica se há arquivos staged e executa o binário — sem precisar sair do terminal. Você ainda interage com a TUI normalmente.
+
 ## Estilos de commit
 
 | Estilo | Exemplo |
@@ -265,6 +275,16 @@ ezgocommit --style gitmoji       # use gitmoji instead of conventional commits
 ezgocommit --style free          # no format constraints
 ezgocommit --model claude-opus-4-6  # use a different Claude model
 ```
+
+## Claude Code Skill
+
+If you use [Claude Code](https://claude.ai/code), the project ships with a native skill. After cloning the repo, the `/ez-gocommit` command is available automatically in Claude Code:
+
+```text
+/ez-gocommit
+```
+
+Claude checks for staged files and runs the binary — without leaving the terminal. You still interact with the TUI as usual.
 
 ## Commit styles
 

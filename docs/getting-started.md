@@ -99,6 +99,18 @@ ANTHROPIC_API_KEY="" ezgocommit
 # ...
 ```
 
+## Claude Code Skill
+
+Se você usa o [Claude Code](https://claude.ai/code), o comando `/ez-gocommit` fica disponível automaticamente após clonar o repositório — a skill está em `.claude/skills/ez-gocommit/SKILL.md`.
+
+```text
+/ez-gocommit
+```
+
+O Claude verifica se há arquivos staged e executa o binário para você. A TUI interativa funciona normalmente.
+
+> A skill usa `disable-model-invocation: true`, então o Claude não irá commitar automaticamente — você sempre invoca explicitamente.
+
 ## Próximos passos
 
 - [Referência de Configuração](configuration.md) — personalizar modelo, estilo, limites de diff
@@ -207,6 +219,18 @@ ANTHROPIC_API_KEY="" ezgocommit
 # Error: Anthropic API key not found.
 # ...
 ```
+
+## Claude Code Skill
+
+If you use [Claude Code](https://claude.ai/code), the `/ez-gocommit` command is available automatically after cloning the repo — the skill is at `.claude/skills/ez-gocommit/SKILL.md`.
+
+```text
+/ez-gocommit
+```
+
+Claude checks for staged files and runs the binary for you. The interactive TUI works as usual.
+
+> The skill uses `disable-model-invocation: true`, so Claude won't commit automatically — you always invoke it explicitly.
 
 ## Next steps
 
