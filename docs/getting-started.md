@@ -101,15 +101,35 @@ ANTHROPIC_API_KEY="" ezgocommit
 
 ## Claude Code Skill
 
-Se você usa o [Claude Code](https://claude.ai/code), o comando `/ez-gocommit` fica disponível automaticamente após clonar o repositório — a skill está em `.claude/skills/ez-gocommit/SKILL.md`.
+Se você usa o [Claude Code](https://claude.ai/code), o comando `/ez-gocommit` fica disponível automaticamente após clonar o repositório. A skill está em `.claude/skills/ez-gocommit/SKILL.md`.
 
 ```text
 /ez-gocommit
 ```
 
-O Claude verifica se há arquivos staged e executa o binário para você. A TUI interativa funciona normalmente.
+### O que a skill faz
 
-> A skill usa `disable-model-invocation: true`, então o Claude não irá commitar automaticamente — você sempre invoca explicitamente.
+1. Executa `git diff --cached --stat` para verificar se há arquivos staged
+2. Se não houver, informa para você fazer `git add` primeiro
+3. Se houver, executa `ezgocommit` — a TUI interativa abre normalmente no terminal
+
+### Passando argumentos
+
+Você pode passar qualquer flag do `ezgocommit` diretamente pelo slash command:
+
+```text
+/ez-gocommit --style gitmoji
+/ez-gocommit --style free
+/ez-gocommit --model claude-opus-4-6
+```
+
+### Modelo de permissões
+
+A skill declara `allowed-tools: Bash(git *), Bash(ezgocommit *)`, o que limita os comandos que o Claude Code pode executar apenas a operações Git e ao próprio binário. Nenhum outro comando do sistema é permitido.
+
+Além disso, `disable-model-invocation: true` garante que o Claude não tenta gerar a mensagem de commit por conta própria — a análise fica inteiramente com o `ezgocommit`.
+
+> Você sempre invoca a skill explicitamente com `/ez-gocommit`; ela nunca roda de forma automática.
 
 ## Próximos passos
 
@@ -222,15 +242,35 @@ ANTHROPIC_API_KEY="" ezgocommit
 
 ## Claude Code Skill
 
-If you use [Claude Code](https://claude.ai/code), the `/ez-gocommit` command is available automatically after cloning the repo — the skill is at `.claude/skills/ez-gocommit/SKILL.md`.
+If you use [Claude Code](https://claude.ai/code), the `/ez-gocommit` command is available automatically after cloning the repo. The skill is at `.claude/skills/ez-gocommit/SKILL.md`.
 
 ```text
 /ez-gocommit
 ```
 
-Claude checks for staged files and runs the binary for you. The interactive TUI works as usual.
+### What the skill does
 
-> The skill uses `disable-model-invocation: true`, so Claude won't commit automatically — you always invoke it explicitly.
+1. Runs `git diff --cached --stat` to check for staged files
+2. If none are found, it tells you to `git add` first
+3. If there are staged changes, it runs `ezgocommit` — the interactive TUI opens normally in the terminal
+
+### Passing arguments
+
+You can pass any `ezgocommit` flag directly through the slash command:
+
+```text
+/ez-gocommit --style gitmoji
+/ez-gocommit --style free
+/ez-gocommit --model claude-opus-4-6
+```
+
+### Permission model
+
+The skill declares `allowed-tools: Bash(git *), Bash(ezgocommit *)`, which limits what Claude Code can execute to Git operations and the binary itself. No other system commands are permitted.
+
+Additionally, `disable-model-invocation: true` ensures Claude does not try to generate the commit message on its own — all analysis stays within `ezgocommit`.
+
+> You always invoke the skill explicitly with `/ez-gocommit`; it never runs automatically.
 
 ## Next steps
 

@@ -129,7 +129,16 @@ Se você usa o [Claude Code](https://claude.ai/code), o projeto inclui uma skill
 /ez-gocommit
 ```
 
-O Claude verifica se há arquivos staged e executa o binário — sem precisar sair do terminal. Você ainda interage com a TUI normalmente.
+A skill verifica se há arquivos staged e executa o binário — sem precisar sair do terminal. Você ainda interage com a TUI normalmente.
+
+Você pode passar flags diretamente pelo comando:
+
+```text
+/ez-gocommit --style gitmoji
+/ez-gocommit --model claude-opus-4-6
+```
+
+A skill usa `disable-model-invocation: true` (o Claude não invoca a si mesmo) e `allowed-tools` restrito a `git *` e `ezgocommit *`, garantindo que nenhum outro comando seja executado no seu sistema. Veja [docs/getting-started.md](docs/getting-started.md#claude-code-skill) para mais detalhes.
 
 ## Estilos de commit
 
@@ -284,7 +293,16 @@ If you use [Claude Code](https://claude.ai/code), the project ships with a nativ
 /ez-gocommit
 ```
 
-Claude checks for staged files and runs the binary — without leaving the terminal. You still interact with the TUI as usual.
+The skill checks for staged files and runs the binary — without leaving the terminal. You still interact with the TUI as usual.
+
+You can pass flags directly through the command:
+
+```text
+/ez-gocommit --style gitmoji
+/ez-gocommit --model claude-opus-4-6
+```
+
+The skill uses `disable-model-invocation: true` (Claude does not invoke itself) and `allowed-tools` restricted to `git *` and `ezgocommit *`, ensuring no other commands are run on your system. See [docs/getting-started.md](docs/getting-started.md#claude-code-skill) for more details.
 
 ## Commit styles
 

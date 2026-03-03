@@ -1,5 +1,4 @@
 ---
-name: ez-gocommit
 description: Generate semantic Git commit messages using Claude AI. Use when the user wants to create a commit, generate a commit message, or asks "commit my changes".
 argument-hint: "[optional extra context]"
 allowed-tools: Bash(git *)
