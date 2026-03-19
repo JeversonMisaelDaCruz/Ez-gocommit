@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/fatih/color"
@@ -109,6 +110,11 @@ func mockSuggestions(ctx *gitcollector.Context, style string) []ai.Suggestion {
 	}
 }
 
+var knownExtensions = []string{
+	".go", ".ts", ".js", ".py", ".java", ".c", ".cpp", ".cs", ".rb",
+	".rs", ".swift", ".kt", ".php", ".scala", ".sh", ".bash", ".zsh",
+}
+
 func inferScope(files []string) string {
 	if len(files) == 0 {
 		return "core"
@@ -118,9 +124,9 @@ func inferScope(files []string) string {
 		return parts[len(parts)-2]
 	}
 	name := parts[0]
-	name = strings.TrimSuffix(name, ".go")
-	name = strings.TrimSuffix(name, ".ts")
-	name = strings.TrimSuffix(name, ".js")
+	for _, ext := range knownExtensions {
+		name = strings.TrimSuffix(name, ext)
+	}
 	return name
 }
 
@@ -151,14 +157,20 @@ func doCommit(message, body string) error {
 	gitCmd := exec.Command("git", "commit", "-m", full)
 	gitCmd.Stdout = os.Stdout
 	gitCmd.Stderr = os.Stderr
-	return gitCmd.Run()
+	if err := gitCmd.Run(); err != nil {
+		return fmt.Errorf("git commit failed: %w", err)
+	}
+	return nil
 }
 
 func startSpinner(label string) func() {
 	frames := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 	stop := make(chan struct{})
+	var wg sync.WaitGroup
 
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		i := 0
 		for {
 			select {
@@ -175,6 +187,6 @@ func startSpinner(label string) func() {
 
 	return func() {
 		close(stop)
-		time.Sleep(100 * time.Millisecond)
+		wg.Wait()
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	anthropic "github.com/anthropics/anthropic-sdk-go"
 	"github.com/anthropics/anthropic-sdk-go/option"
@@ -19,14 +20,21 @@ const (
 
 	geminiEndpoint     = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
 	geminiDefaultModel = "gemini-2.0-flash"
+
+	maxTokens   = 1024
+	maxRetries  = 3
 )
 
 func GenerateSuggestions(userPrompt, apiKey, model string) ([]Suggestion, error) {
 	switch detectProvider(apiKey) {
 	case providerGemini:
-		return callGemini(userPrompt, apiKey, resolveGeminiModel(model))
+		return withRetry(maxRetries, func() ([]Suggestion, error) {
+			return callGemini(userPrompt, apiKey, resolveGeminiModel(model))
+		})
 	default:
-		return callAnthropic(userPrompt, apiKey, model)
+		return withRetry(maxRetries, func() ([]Suggestion, error) {
+			return callAnthropic(userPrompt, apiKey, model)
+		})
 	}
 }
 
@@ -44,12 +52,49 @@ func resolveGeminiModel(model string) string {
 	return geminiDefaultModel
 }
 
+func withRetry(maxAttempts int, fn func() ([]Suggestion, error)) ([]Suggestion, error) {
+	var lastErr error
+	for attempt := 0; attempt < maxAttempts; attempt++ {
+		if attempt > 0 {
+			time.Sleep(time.Duration(attempt) * time.Second)
+		}
+		result, err := fn()
+		if err == nil {
+			return result, nil
+		}
+		lastErr = err
+		if !isTransientError(err) {
+			return nil, err
+		}
+	}
+	return nil, fmt.Errorf("failed after %d attempts: %w", maxAttempts, lastErr)
+}
+
+func isTransientError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := err.Error()
+	return strings.Contains(msg, "429") ||
+		strings.Contains(msg, "500") ||
+		strings.Contains(msg, "502") ||
+		strings.Contains(msg, "503") ||
+		strings.Contains(msg, "504")
+}
+
+func maskKey(key string) string {
+	if len(key) <= 8 {
+		return "****"
+	}
+	return key[:4] + strings.Repeat("*", len(key)-8) + key[len(key)-4:]
+}
+
 func callAnthropic(userPrompt, apiKey, model string) ([]Suggestion, error) {
 	client := anthropic.NewClient(option.WithAPIKey(apiKey))
 
 	msg, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
 		Model:     anthropic.Model(model),
-		MaxTokens: 1024,
+		MaxTokens: maxTokens,
 		System: []anthropic.TextBlockParam{
 			{Text: SystemPrompt()},
 		},
@@ -101,7 +146,7 @@ func callGeminiWithEndpoint(userPrompt, apiKey, model, endpoint string) ([]Sugge
 			{Role: "system", Content: SystemPrompt()},
 			{Role: "user", Content: userPrompt},
 		},
-		MaxTokens: 1024,
+		MaxTokens: maxTokens,
 	}
 
 	body, err := json.Marshal(payload)
@@ -164,7 +209,11 @@ func parseSuggestions(raw string) ([]Suggestion, error) {
 
 	var response AIResponse
 	if err := json.Unmarshal([]byte(raw), &response); err != nil {
-		return nil, fmt.Errorf("failed to parse AI response as JSON: %w\n\nRaw response:\n%s", err, raw)
+		preview := raw
+		if len(preview) > 200 {
+			preview = preview[:200] + "..."
+		}
+		return nil, fmt.Errorf("failed to parse AI response as JSON: %w\n\nResponse preview:\n%s", err, preview)
 	}
 
 	if len(response.Suggestions) == 0 {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	gogit "github.com/go-git/go-git/v5"
@@ -149,7 +150,7 @@ func getRecentCommits(repo *gogit.Repository, n int) ([]string, error) {
 func getProjectContext(repoPath string) string {
 	candidates := []string{"README.md", "readme.md", "README.rst", "README"}
 	for _, name := range candidates {
-		path := repoPath + "/" + name
+		path := filepath.Join(repoPath, name)
 		f, err := os.Open(path)
 		if err != nil {
 			continue
